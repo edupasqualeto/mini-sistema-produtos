@@ -21,3 +21,9 @@ Sistema desenvolvido em Java com foco em aprendizado de backend.
 ## Objetivo
 
 Praticar conceitos de arquitetura (Model, Service, Sistema) e lógica de negócio.
+
+## Como rodar
+1. Clone o projeto
+2. Compile
+3. Execute a classe Main
+
