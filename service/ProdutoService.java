@@ -1,6 +1,7 @@
-package miniSistema;
+package miniSistema.service;
 
 import java.util.ArrayList;
+import miniSistema.model.Produto;
 
 public class ProdutoService {
     

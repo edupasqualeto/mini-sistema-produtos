@@ -1,4 +1,4 @@
-package miniSistema;
+package miniSistema.model;
 
 public class Produto {
     
