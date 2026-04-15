@@ -4,23 +4,39 @@ Sistema desenvolvido em Java com foco em aprendizado de backend.
 
 ## Funcionalidades
 
-- Cadastro de produtos
-- Listagem
+- Cadastro de produtos com validação de dados (ex: nome não vazio)
+- Listagem de produtos formatada em tabela
+- Atualização de:
+    Nome
+    Preço
+- Remoção de produtos
 - Aplicação de desconto
-- Remoção
-- Atualização de preço
-- Atualização de nome
-- Validações de entrada
-- Prevenção de duplicados
+- Prevenção de produtos duplicados
+- Persistência de dados com banco (JDBC + SQLite)
+- Tratamento básico de erros (ex: conexões e queries)
 
 ## Tecnologias
 
 - Java
-- Programação Orientada a Objetos
+- Programação Orientada a Objetos (POO)
+- JDBC (Java Database Connectivity)
+- SQLite
+- Estrutura em camadas (Model, Service, View, Database)
+
+## Estrutura do projeto
+
+- model → Representação dos dados (Produto)
+- service → Regras de negócio e validações
+- database → Conexão com banco de dados
+- sistema → Interface com o usuário (menu e execução)
 
 ## Objetivo
 
-Praticar conceitos de arquitetura (Model, Service, Sistema) e lógica de negócio.
+- Separação de responsabilidades (camadas)
+- Lógica de negócio
+- Integração com banco de dados
+- Boas práticas de código em Java
+- Estrutura semelhante a sistemas reais backend
 
 ## Como rodar
 1. Clone o projeto
