@@ -26,54 +26,56 @@ public class Sistema {
             switch (opcao) {
 
                 case 1:
-                    String nome = lerNomeInexistente();
+                    String nome = lerNomeValido();
                     double preco = lerPrecoValido("Digite o preço: ");
 
                     Produto produto = new Produto(nome, preco);
-                    service.cadastrarProduto(produto);
-
-                    System.out.println("Produto cadastrado com sucesso!");
+                    
+                    service.salvarProduto(produto);
                     break;
 
-                case 2:
+                case 2: 
                     service.listarProdutos();
                     break;
 
                 case 3:
-                    String nomeDesconto = lerNomeExistente();
-
-                    Produto encontrado = service.buscarProduto(nomeDesconto);
-                    service.aplicarDesconto(encontrado);
-
-                    System.out.println("Desconto aplicado!");
+                    int idDescontarPreco = lerIdExistente();
+                    if(idDescontarPreco == 0){
+                        break;
+                    }
+ 
+                    service.aplicarDesconto(idDescontarPreco);
                     break;
 
                 case 4:
-                    String nomeRemover = lerNomeExistente();
-                    service.removerProduto(nomeRemover);
+                    int idRemover = lerIdExistente();
+                    if(idRemover == 0){
+                        break;
+                    }
+
+                    service.removerProduto(idRemover);
                     break;
 
                 case 5:
-                    String nomeAtualizar = lerNomeExistente();
-
-                    Produto atualizarValor = service.buscarProduto(nomeAtualizar);
+                    int idAtualizarPreco = lerIdExistente();
+                    if(idAtualizarPreco == 0){
+                        break;
+                    }
+                    
                     double novoValor = lerPrecoValido("Digite o novo preço: ");
 
-                    service.atualizarPreco(atualizarValor, novoValor);
-                    System.out.println("Valor do produto alterado!");
+                    service.atualizarPreco(idAtualizarPreco, novoValor);
                     break;
 
                 case 6:
-                    String nomeAtual = lerNomeExistente();
-                    String novoNome = lerNomeInexistente();
-
-                    Produto p = service.buscarProduto(nomeAtual);
-
-                    if (service.atualizarNome(p, novoNome)) {
-                        System.out.println("Nome atualizado com sucesso!");
-                    } else {
-                        System.out.println("Erro ao atualizar nome!");
+                    int idNome = lerIdExistente();
+                    if(idNome == 0){
+                        break;
                     }
+                    
+                    String novoNome = lerNomeValido();
+                    
+                    service.atualizarNome(idNome, novoNome);
                     break;
 
                 case 0:
@@ -103,35 +105,35 @@ public class Sistema {
         }
     }
 
-    private String lerNomeInexistente() {
-        String nome;
-
-        while (true) {
-            nome = lerNomeValido();
-
-            if (service.produtoExiste(nome)) {
-                System.out.println("Produto já existe!");
-                continue;
-            }
-
-            return nome;
-        }
-    }
-
-    private String lerNomeExistente() {
-        String nome;
-
-        while (true) {
-            nome = lerNomeValido();
-
-            if (!service.produtoExiste(nome)) {
-                System.out.println("Produto não encontrado!");
-                continue;
-            }
-
-            return nome;
-        }
-    }
+//    private String lerNomeInexistente() {
+//        String nome;
+//
+//        while (true) {
+//            nome = lerNomeValido();
+//
+//            if (service.produtoExiste(nome)) {
+//                System.out.println("Produto já existe!");
+//                continue;
+//            }
+//
+//            return nome;
+//        }
+//    }
+//
+//    private String lerNomeExistente() {
+//        String nome;
+//
+//        while (true) {
+//            nome = lerNomeValido();
+//
+//            if (!service.produtoExiste(nome)) {
+//                System.out.println("Produto não encontrado!");
+//                continue;
+//            }
+//
+//            return nome;
+//        }
+//    }
 
     private double lerPrecoValido(String mensagem) {
         double preco;
@@ -149,4 +151,26 @@ public class Sistema {
             return preco;
         }
     }
+    
+    private int lerIdExistente() {
+        int id;
+
+        while (true) {
+            System.out.print("Digite o ID (ou 0 para cancelar): ");
+            id = teclado.nextInt();
+            teclado.nextLine();
+            
+            if(id == 0) {
+                return id;
+            }
+
+            if (!service.existeId(id)) {
+                System.out.println("ID não encontrado!");
+                continue;
+            }
+
+            return id;
+        }
+    }
+    
 }
