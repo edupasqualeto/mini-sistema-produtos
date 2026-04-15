@@ -105,36 +105,6 @@ public class Sistema {
         }
     }
 
-//    private String lerNomeInexistente() {
-//        String nome;
-//
-//        while (true) {
-//            nome = lerNomeValido();
-//
-//            if (service.produtoExiste(nome)) {
-//                System.out.println("Produto já existe!");
-//                continue;
-//            }
-//
-//            return nome;
-//        }
-//    }
-//
-//    private String lerNomeExistente() {
-//        String nome;
-//
-//        while (true) {
-//            nome = lerNomeValido();
-//
-//            if (!service.produtoExiste(nome)) {
-//                System.out.println("Produto não encontrado!");
-//                continue;
-//            }
-//
-//            return nome;
-//        }
-//    }
-
     private double lerPrecoValido(String mensagem) {
         double preco;
 
