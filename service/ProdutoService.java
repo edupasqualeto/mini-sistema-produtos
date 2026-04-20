@@ -1,17 +1,18 @@
 package miniSistema.service;
 
+import miniSistema.repository.ProdutoRepository;
 import miniSistema.model.Produto;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
-import miniSistema.database.Conexao;
+import java.util.List;
 
 public class ProdutoService {
 
-    //Validar entradas
-    
+    private ProdutoRepository repository = new ProdutoRepository();
+
+    // =========================
+    // Validações
+    // =========================
+
     public boolean nomeValido(String nome) {
         return nome != null && !nome.trim().isEmpty();
     }
@@ -20,182 +21,79 @@ public class ProdutoService {
         return preco >= 0;
     }
     
-    //Metodos principais
+    // =========================
+    // Atualizações
+    // =========================
 
-    public void salvarProduto(Produto p) {
+    public boolean atualizarPreco(int id, double novoPreco) {
 
-    String sql = "INSERT INTO produto (nome, preco) VALUES (?, ?)";
-
-    try (Connection conn = Conexao.conectar();
-        PreparedStatement stmt = conn.prepareStatement(sql)) {
-        
-        stmt.setString(1, p.getNome());
-        stmt.setDouble(2, p.getPreco());
-
-        stmt.execute();
-
-        System.out.println("Produto salvo no banco!");
-
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-}
-
-    public void listarProdutos() {
-
-    String sql = "SELECT * FROM produto";
-
-    try (Connection conn = Conexao.conectar();
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        ResultSet rs = stmt.executeQuery()) {
-
-        System.out.printf("%-3s | %-15s | %-10s%n", "ID", "NOME", "PREÇO");
-        System.out.println("------------------------------------------");
-        
-        while (rs.next()) {
-            int id = rs.getInt("id");
-            String nome = rs.getString("nome");
-            double preco = rs.getDouble("preco");
-
-            System.out.printf("%-3d | %-15s | R$ %-7.2f%n", id, nome, preco);
+        if (!precoValido(novoPreco)) {
+            return false;
         }
 
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-}
-
-    public void aplicarDesconto(int id) {
-
-        String sqlSelect = "SELECT preco FROM produto WHERE id = ?";
-        String sqlUpdate = "UPDATE produto SET preco = ? WHERE id = ?";
-
-        try (Connection conn = Conexao.conectar();
-             PreparedStatement stmtSelect = conn.prepareStatement(sqlSelect)) {
-
-            stmtSelect.setInt(1, id);
-
-            try (ResultSet rs = stmtSelect.executeQuery()) {
-
-                if (rs.next()) {
-
-                    double preco = rs.getDouble("preco");
-                    double novoPreco;
-
-                    if (preco > 200) {
-                        novoPreco = preco * 0.8;
-                    } else {
-                        novoPreco = preco * 0.9;
-                    }
-
-                    try (PreparedStatement stmtUpdate = conn.prepareStatement(sqlUpdate)) {
-
-                        stmtUpdate.setDouble(1, novoPreco);
-                        stmtUpdate.setInt(2, id);
-
-                        int linhas = stmtUpdate.executeUpdate();
-
-                        if (linhas > 0) {
-                            System.out.println("Desconto aplicado com sucesso!");
-                        }
-                    }
-
-                } else {
-                    System.out.println("Produto não encontrado!");
-                }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    
-    public void removerProduto(int id) {
-
-    String sql = "DELETE FROM produto WHERE id = ?";
-
-    try (Connection conn = Conexao.conectar();
-        PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-        stmt.setInt(1, id);
-
-        int linhasAfetadas = stmt.executeUpdate();
-
-        if (linhasAfetadas > 0) {
-            System.out.println("Produto removido com sucesso!");
-        } else {
-            System.out.println("Produto não encontrado!");
+        if (!repository.existeId(id)) {
+            return false;
         }
 
-    } catch (Exception e) {
-        e.printStackTrace();
+        return repository.atualizarPreco(id, novoPreco);
     }
-}
 
-    public void atualizarPreco(int id, double novoPreco) {
+    public boolean atualizarNome(int id, String novoNome) {
 
-    String sql = "UPDATE produto SET preco = ? WHERE id = ?";
-
-    try (Connection conn = Conexao.conectar();
-        PreparedStatement stmt = conn.prepareStatement(sql)) {
-        
-        stmt.setDouble(1, novoPreco);
-        stmt.setInt(2, id);
-
-        int linhasAfetadas = stmt.executeUpdate();
-
-        if (linhasAfetadas > 0) {
-            System.out.println("Preço atualizado com sucesso!");
-        } else {
-            System.out.println("Produto não encontrado!");
+        if (!nomeValido(novoNome)) {
+            return false;
         }
 
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-}
-
-    public void atualizarNome(int id, String novoNome) {
-
-    String sql = "UPDATE produto SET nome = ? WHERE id = ?";
-
-    try (Connection conn = Conexao.conectar();
-        PreparedStatement stmt = conn.prepareStatement(sql)) {
-        
-        stmt.setString(1, novoNome);
-        stmt.setInt(2, id);
-
-        int linhasAfetadas = stmt.executeUpdate();
-
-        if (linhasAfetadas > 0) {
-            System.out.println("Nome atualizado com sucesso!");
-        } else {
-            System.out.println("Produto não encontrado!");
+        if (!repository.existeId(id)) {
+            return false;
         }
 
-    } catch (Exception e) {
-        e.printStackTrace();
+        return repository.atualizarNome(id, novoNome);
     }
-}
-    
+
     public boolean existeId(int id) {
-
-    String sql = "SELECT 1 FROM produto WHERE id = ?";
-
-    try (Connection conn = Conexao.conectar();
-        PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-        stmt.setInt(1, id);
-
-       try (ResultSet rs = stmt.executeQuery()) {
-            return rs.next();
-        }
-
-    } catch (Exception e) {
-        e.printStackTrace();
+        return repository.existeId(id);
     }
 
-    return false;
+    // =========================
+    // Regras de negócio
+    // =========================
 
+    public boolean salvarProduto(String nome, double preco) {
+
+        if (!nomeValido(nome) || !precoValido(preco)) {
+            return false;
+        }
+
+        Produto produto = new Produto(nome, preco);
+        return repository.salvarProduto(produto);
+    }
+
+    public List<Produto> listarProdutos() {
+        return repository.listarProdutos();
+    }
+
+    public boolean removerProduto(int id) {
+        return repository.removerProduto(id);
+    }
+
+    public boolean aplicarDesconto(int id) {
+
+        Produto produto = repository.buscarPorId(id);
+
+        if (produto == null) {
+            return false;
+        }
+
+        double preco = produto.getPreco(); 
+        double novoPreco; 
+        if (preco > 200) { 
+            novoPreco = preco * 0.8; 
+        } 
+        else { 
+            novoPreco = preco * 0.9; 
+        }
+
+        return repository.atualizarPreco(id, novoPreco);
     }
 }

@@ -1,13 +1,15 @@
 package miniSistema.view;
 
+import java.util.List;
 import java.util.Scanner;
+
 import miniSistema.service.ProdutoService;
 import miniSistema.model.Produto;
 
 public class Sistema {
 
-    Scanner teclado = new Scanner(System.in);
-    ProdutoService service = new ProdutoService();
+    private Scanner teclado = new Scanner(System.in);
+    private ProdutoService service = new ProdutoService();
 
     public void executar() {
 
@@ -26,56 +28,27 @@ public class Sistema {
             switch (opcao) {
 
                 case 1:
-                    String nome = lerNomeValido();
-                    double preco = lerPrecoValido("Digite o preço: ");
-
-                    Produto produto = new Produto(nome, preco);
-                    
-                    service.salvarProduto(produto);
+                    cadastrarProduto();
                     break;
 
-                case 2: 
-                    service.listarProdutos();
+                case 2:
+                    listarProdutos();
                     break;
 
                 case 3:
-                    int idDescontarPreco = lerIdExistente();
-                    if(idDescontarPreco == 0){
-                        break;
-                    }
- 
-                    service.aplicarDesconto(idDescontarPreco);
+                    aplicarDesconto();
                     break;
 
                 case 4:
-                    int idRemover = lerIdExistente();
-                    if(idRemover == 0){
-                        break;
-                    }
-
-                    service.removerProduto(idRemover);
+                    removerProduto();
                     break;
 
                 case 5:
-                    int idAtualizarPreco = lerIdExistente();
-                    if(idAtualizarPreco == 0){
-                        break;
-                    }
-                    
-                    double novoValor = lerPrecoValido("Digite o novo preço: ");
-
-                    service.atualizarPreco(idAtualizarPreco, novoValor);
+                    atualizarPreco();
                     break;
 
                 case 6:
-                    int idNome = lerIdExistente();
-                    if(idNome == 0){
-                        break;
-                    }
-                    
-                    String novoNome = lerNomeValido();
-                    
-                    service.atualizarNome(idNome, novoNome);
+                    atualizarNome();
                     break;
 
                 case 0:
@@ -89,12 +62,105 @@ public class Sistema {
         }
     }
 
-    private String lerNomeValido() {
-        String nome;
+    // =========================
+    // Ações do sistema
+    // =========================
 
+    private void cadastrarProduto() {
+        String nome = lerNomeValido();
+        double preco = lerPrecoValido("Digite o preço: ");
+
+        boolean sucesso = service.salvarProduto(nome, preco);
+
+        if (sucesso) {
+            System.out.println("Produto cadastrado com sucesso!");
+        } else {
+            System.out.println("Erro ao cadastrar produto!");
+        }
+    }
+
+    private void listarProdutos() {
+
+        List<Produto> produtos = service.listarProdutos();
+
+        if (produtos.isEmpty()) {
+            System.out.println("Nenhum produto cadastrado.");
+            return;
+        }
+
+        System.out.printf("%-3s | %-15s | %-10s%n", "ID", "NOME", "PREÇO");
+        System.out.println("------------------------------------------");
+
+        for (Produto p : produtos) {
+            System.out.printf("%-3d | %-15s | R$ %-7.2f%n",
+                    p.getId(), p.getNome(), p.getPreco());
+        }
+    }
+
+    private void aplicarDesconto() {
+        int id = lerIdExistente();
+        if (id == 0) return;
+
+        boolean sucesso = service.aplicarDesconto(id);
+
+        if (sucesso) {
+            System.out.println("Desconto aplicado com sucesso!");
+        } else {
+            System.out.println("Erro ao aplicar desconto!");
+        }
+    }
+
+    private void removerProduto() {
+        int id = lerIdExistente();
+        if (id == 0) return;
+
+        boolean sucesso = service.removerProduto(id);
+
+        if (sucesso) {
+            System.out.println("Produto removido com sucesso!");
+        } else {
+            System.out.println("Produto não foi removido!");
+        }
+    }
+
+    private void atualizarPreco() {
+        int id = lerIdExistente();
+        if (id == 0) return;
+
+        double novoPreco = lerPrecoValido("Digite o novo preço: ");
+
+        boolean sucesso = service.atualizarPreco(id, novoPreco);
+
+        if (sucesso) {
+            System.out.println("Preço atualizado com sucesso!");
+        } else {
+            System.out.println("Erro ao atualizar preço!");
+        }
+    }
+
+    private void atualizarNome() {
+        int id = lerIdExistente();
+        if (id == 0) return;
+
+        String novoNome = lerNomeValido();
+
+        boolean sucesso = service.atualizarNome(id, novoNome);
+
+        if (sucesso) {
+            System.out.println("Nome atualizado com sucesso!");
+        } else {
+            System.out.println("Erro ao atualizar nome!");
+        }
+    }
+
+    // =========================
+    // Leitura de dados
+    // =========================
+
+    private String lerNomeValido() {
         while (true) {
             System.out.print("Digite o nome do produto: ");
-            nome = teclado.nextLine();
+            String nome = teclado.nextLine();
 
             if (!service.nomeValido(nome)) {
                 System.out.println("Nome inválido!");
@@ -106,11 +172,9 @@ public class Sistema {
     }
 
     private double lerPrecoValido(String mensagem) {
-        double preco;
-
         while (true) {
             System.out.print(mensagem);
-            preco = teclado.nextDouble();
+            double preco = teclado.nextDouble();
             teclado.nextLine();
 
             if (!service.precoValido(preco)) {
@@ -121,18 +185,14 @@ public class Sistema {
             return preco;
         }
     }
-    
-    private int lerIdExistente() {
-        int id;
 
+    private int lerIdExistente() {
         while (true) {
             System.out.print("Digite o ID (ou 0 para cancelar): ");
-            id = teclado.nextInt();
+            int id = teclado.nextInt();
             teclado.nextLine();
-            
-            if(id == 0) {
-                return id;
-            }
+
+            if (id == 0) return 0;
 
             if (!service.existeId(id)) {
                 System.out.println("ID não encontrado!");
@@ -142,5 +202,4 @@ public class Sistema {
             return id;
         }
     }
-    
 }
