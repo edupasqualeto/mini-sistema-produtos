@@ -1,14 +1,12 @@
 # Mini Sistema de Produtos
 
-Sistema desenvolvido em Java com foco em aprendizado de backend.
+Sistema desenvolvido em Java com foco em aprendizado de backend, aplicando conceitos de arquitetura em camadas, persistência de dados e boas práticas de programação.
 
 ## Funcionalidades
 
-- Cadastro de produtos com validação de dados (ex: nome não vazio)
+- Cadastro de produtos com validação de dados (ex: nome obrigatório)
 - Listagem de produtos formatada em tabela
-- Atualização de:
-    Nome
-    Preço
+- Atualização de: Nome / Preço
 - Remoção de produtos
 - Aplicação de desconto
 - Prevenção de produtos duplicados
@@ -21,25 +19,34 @@ Sistema desenvolvido em Java com foco em aprendizado de backend.
 - Programação Orientada a Objetos (POO)
 - JDBC (Java Database Connectivity)
 - SQLite
-- Estrutura em camadas (Model, Service, View, Database)
+- Arquitetura em camadas
 
 ## Estrutura do projeto
 
-- model → Representação dos dados (Produto)
-- service → Regras de negócio e validações
-- database → Conexão com banco de dados
-- sistema → Interface com o usuário (menu e execução)
+miniSistema/
+│
+├── model/       → Representação dos dados (Produto)
+├── service/     → Regras de negócio e validações
+├── database/    → Conexão e operações com o banco
+├── view/        → Interface com o usuário (menu)
+└── main/        → Classe principal para execução
 
 ## Objetivo
 
-- Separação de responsabilidades (camadas)
-- Lógica de negócio
-- Integração com banco de dados
+- Aplicar separação de responsabilidades (arquitetura em camadas)
+- Praticar lógica de negócio
+- Trabalhar com persistência de dados (CRUD completo)
 - Boas práticas de código em Java
 - Estrutura semelhante a sistemas reais backend
 
 ## Como rodar
 1. Clone o projeto
+- git clone <url-do-repositorio>
 2. Compile
+- javac Main.java
 3. Execute a classe Main
+- java Main
 
+## Observações
+- O banco de dados SQLite é criado automaticamente (caso não exista)
+- Projeto focado em aprendizado — não segue ainda padrões avançados como frameworks (Spring, etc.)
