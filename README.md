@@ -24,12 +24,11 @@ Sistema desenvolvido em Java com foco em aprendizado de backend, aplicando conce
 ## Estrutura do projeto
 
 miniSistema/
-│
-├── model/       → Representação dos dados (Produto)
-├── service/     → Regras de negócio e validações
-├── database/    → Conexão e operações com o banco
-├── view/        → Interface com o usuário (menu)
-└── main/        → Classe principal para execução
+- model/       → Representação dos dados (Produto)
+- service/     → Regras de negócio e validações
+- database/    → Conexão e operações com o banco
+- view/        → Interface com o usuário (menu)
+- main/        → Classe principal para execução
 
 ## Objetivo
 
